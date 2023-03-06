@@ -1,0 +1,100 @@
+create table atendimento(
+	id integer,
+	dt_atendimento DATE not null,
+	atendido char(1) not null,
+	resolvido char(1) not null,
+	tempo_atendimento numeric(12,2) not null,
+	indice_satisfacao integer not null
+);
+
+insert into atendimento values(41, date("2022-12-03"), 'T', 'T', 221, 9);
+insert into atendimento values(42, date("2022-12-05"), 'F', 'F', 443, 8);
+insert into atendimento values(43, date("2022-12-06"), 'T', 'T', 213, 9);
+insert into atendimento values(44, date("2022-01-13"), 'T', 'T', 456, 7);
+insert into atendimento values(45, date("2022-01-15"), 'T', 'T', 4564, 6);
+insert into atendimento values(46, date("2023-01-03"), 'F', 'F', 3456, 5);
+insert into atendimento values(47, date("2023-02-12"), 'T', 'F', 356, 3);
+insert into atendimento values(48, date("2023-02-22"), 'T', 'T', 456, 5);
+insert into atendimento values(49, date("2023-02-28"), 'T', 'T', 567, 6);
+insert into atendimento values(50, date("2023-03-01"), 'T', 'T', 8987, 7);
+insert into atendimento values(51, date("2023-03-02"), 'F', 'F', 567, 8);
+insert into atendimento values(52, date("2023-03-02"), 'T', 'T', 345, 9);
+insert into atendimento values(53, date("2023-02-02"), 'T', 'T', 234, 10);
+insert into atendimento values(54, date("2023-02-03"), 'T', 'T', 2234, 1);
+insert into atendimento values(55, date("2023-02-13"), 'F', 'F', 345, 3);
+insert into atendimento values(56, date("2023-02-09"), 'T', 'F', 456, 2);
+insert into atendimento values(57, date("2022-11-03"), 'T', 'F', 7568, 5);
+insert into atendimento values(58, date("2022-11-19"), 'T', 'T', 5675, 7);
+insert into atendimento values(59, date("2022-11-17"), 'T', 'T', 4564, 8);
+insert into atendimento values(60, date("2022-11-30"), 'T', 'T', 3455, 9);
+
+select * from atendimento;
+-- 1 CORRETO
+select avg(indice_satisfacao) from atendimento;
+
+-- 2 CORRETO
+select sum(tempo_atendimento) from atendimento;
+
+-- 3 CORRETO
+select count(*) from atendimento;
+
+-- 4 CORRETO
+select extract(year from dt_atendimento) as ano, -- NAO ESQUECER DA VÍRGULA
+count(*)
+from atendimento
+group by 1;
+
+-- 5 OK
+select extract(year from dt_atendimento), -- NAO ESQUECER DA VÍRGULA
+	avg(indice_satisfacao)
+	from atendimento
+	group by 1
+	order by 1; -- cresc padrao
+
+-- 6  CORRETo
+select extract(year from dt_atendimento),-- NAO ESQUECER DA VÍRGULA
+	avg(tempo_atendimento)
+	from atendimento
+	group by 1
+	order by 1;
+
+-- usar * ou id? * pq se haver null na tupla para contagem, ou count nao conta
+-- 7
+select atendido,
+	count(*) as "total atendimentos",
+	avg(tempo_atendimento) as "tempo medio",
+	avg(indice_satisfacao) as "indice medio satis"
+	from atendimento
+	group by 1 -- tinha colocado o distinct la em cima, mas nao precisa ja que ja tenho o group by
+order by 1;
+
+-- 8 errado, era pra dar 4 tuplas, mas deu 3 -> verificar
+select 
+	extract(year from dt_atendimento) as "ano",
+	atendido,
+	count(*) as "total atendimentos",
+	avg(tempo_atendimento) as "tempo medio",
+	avg(indice_satisfacao) as "indice medio satis"
+	from atendimento
+	group by 1, 2
+order by 1, 2;
+
+-- 9 ok, mas nao aplica a materia
+select max(indice_satisfacao) as "Maior indice",
+	min(indice_satisfacao) as "Menor indice"
+	from atendimento
+	where extract(year from dt_atendimento) = 2023;
+
+-- aplicando a materia
+select extract(year from dt_atendimento) as ano,
+	max(indice_satisfacao) as "Maior indice",
+	min(indice_satisfacao) as "Menor indice"
+	from atendimento
+	where extract(year from dt_atendimento) = 2023
+	group by 1;
+-- 10 correto
+select atendido,
+	avg(indice_satisfacao)
+	from atendimento
+	group by 1;
+
